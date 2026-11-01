@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Anastasios Kotsadam, Electrical & Computer Engineering student specializing in power electronics and power systems. CV and portfolio.">
+<meta name="author" content="Anastasios Kotsadam">
+<meta property="og:title" content="Anastasios Kotsadam">
+<meta property="og:description" content="Electrical & Computer Engineering · Power Electronics · Power Systems">
+<meta property="og:type" content="profile">
+<title>Anastasios Kotsadam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one quiet left-aligned column; the timeline is the spine of the page, years in a fixed left rail. */
+:root {
+  --bg: #F7F8F9;
+  --surface: #FFFFFF;
+  --fg: #16191D;
+  --muted: #5E6670;
+  --rule: #DDE1E6;
+  --accent: #2E4B6E;
+  --tag-work: #2E4B6E;
+  --tag-proj: #5B5A2E;
+  --tag-edu: #6B3A3A;
+
+  --f-display: "Literata", "Georgia", "Times New Roman", serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --s-xs: 0.8125rem;
+  --s-sm: 0.875rem;
+  --s-md: 1rem;
+  --s-lg: 1.25rem;
+  --s-xl: 2.5rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111316; --surface: #181B1F; --fg: #E7E9EC; --muted: #9AA2AC; --rule: #2A2F35;
+    --accent: #9DB6D6; --tag-work: #9DB6D6; --tag-proj: #C9C68E; --tag-edu: #D8A3A3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111316; --surface: #181B1F; --fg: #E7E9EC; --muted: #9AA2AC; --rule: #2A2F35;
+  --accent: #9DB6D6; --tag-work: #9DB6D6; --tag-proj: #C9C68E; --tag-edu: #D8A3A3;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-body);
+  font-size: var(--s-md);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 4.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4.5rem;
+}
+a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.label {
+  font-size: var(--s-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Header */
+header { display: flex; flex-direction: column; gap: 1.25rem; }
+h1 {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: var(--s-xl);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+.role { font-size: var(--s-lg); color: var(--muted); margin: -0.5rem 0 0; }
+.bio { margin: 0; max-width: 62ch; }
+.meta {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem;
+  font-size: var(--s-sm); color: var(--muted);
+  padding-top: 1.25rem; border-top: 1px solid var(--rule);
+}
+.meta a { color: var(--fg); }
+
+/* Section heads */
+section { display: flex; flex-direction: column; gap: 1.5rem; }
+h2 {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: var(--s-lg);
+  margin: 0;
+}
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.75rem 1rem; }
+
+/* Filters */
+.filters { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.filters button {
+  font: inherit; font-size: var(--s-sm);
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--rule); border-radius: 999px;
+  padding: 0.2rem 0.8rem; cursor: pointer;
+}
+.filters button:hover { color: var(--fg); border-color: var(--muted); }
+.filters button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+/* Timeline */
+.timeline { list-style: none; margin: 0; padding: 0; }
+.year {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 1.25rem;
+}
+.year + .year { margin-top: 0.5rem; }
+.year-num {
+  font-family: var(--f-mono);
+  font-size: var(--s-sm);
+  font-weight: 500;
+  color: var(--fg);
+  padding-top: 0.15rem;
+  font-variant-numeric: tabular-nums;
+  position: sticky; top: env(safe-area-inset-top, 0px);
+  align-self: start;
+}
+.entries { border-left: 1px solid var(--rule); padding-left: 1.5rem; display: flex; flex-direction: column; gap: 2rem; padding-bottom: 2rem; min-width: 0; }
+.entry { position: relative; display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.entry::before {
+  content: ""; position: absolute; left: calc(-1.5rem - 4.5px); top: 0.55rem;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--bg); border: 1.5px solid var(--dot, var(--muted));
+}
+.entry[data-type="work"] { --dot: var(--tag-work); }
+.entry[data-type="project"] { --dot: var(--tag-proj); }
+.entry[data-type="edu"] { --dot: var(--tag-edu); }
+.entry[data-current="true"]::before { background: var(--dot); }
+.entry-top { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; align-items: baseline; }
+.type { font-size: var(--s-xs); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; color: var(--dot); }
+.period { font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
+.entry h3 { margin: 0; font-size: var(--s-md); font-weight: 600; line-height: 1.4; }
+.org { color: var(--muted); font-weight: 400; }
+.entry p { margin: 0; color: var(--fg); max-width: 62ch; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.25rem; }
+.tags span { font-size: var(--s-xs); color: var(--muted); border: 1px solid var(--rule); border-radius: 3px; padding: 0 0.4rem; }
+.entry .link { font-size: var(--s-sm); }
+
+/* Skills */
+.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1.75rem 2rem; }
+.skills div { display: flex; flex-direction: column; gap: 0.5rem; }
+.skills ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.2rem; font-size: var(--s-sm); }
+
+/* Contact */
+.contact { display: flex; flex-direction: column; gap: 0.75rem; }
+.contact-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.email, .phone { font-family: var(--f-mono); font-size: var(--s-md); user-select: all; overflow-wrap: anywhere; }
+.copy {
+  font: inherit; font-size: var(--s-sm);
+  background: transparent; color: var(--fg);
+  border: 1px solid var(--rule); border-radius: 4px; padding: 0.15rem 0.6rem; cursor: pointer;
+}
+.copy:hover { border-color: var(--muted); }
+.links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; font-size: var(--s-sm); }
+
+footer { font-size: var(--s-xs); color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1.25rem; }
+
+@media (max-width: 520px) {
+  .wrap { padding-block: 3rem 2rem; gap: 3.5rem; }
+  h1 { font-size: 2rem; }
+  .year { grid-template-columns: 1fr; gap: 0.75rem; }
+  .year-num { position: static; }
+}
+</style>
+<style>
+html { color-scheme: light; }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="label">Curriculum Vitae · Portfolio</span>
+    <h1>Anastasios Kotsadam</h1>
+    <p class="role">Electrical &amp; Computer Engineering Student · Power Electronics · Power Systems</p>
+    <p class="bio">I am an Electrical &amp; Computer Engineering student at the University of Patras, specializing in energy conversion, power electronics, power systems and renewable energy sources. I am currently a research intern at the University of Stuttgart.</p>
+    <div class="meta">
+      <span>Stuttgart, Germany</span>
+      <span>Graduating Spring 2027</span>
+      <a href="#contact">Contact</a>
+    </div>
+  </header>
+
+  <section aria-labelledby="t-head">
+    <div class="sec-head">
+      <h2 id="t-head">Timeline</h2>
+      <div class="filters" role="group" aria-label="Filter timeline">
+        <button type="button" id="f-all" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" id="f-work" data-filter="work" aria-pressed="false">Experience</button>
+        <button type="button" id="f-project" data-filter="project" aria-pressed="false">Projects</button>
+        <button type="button" id="f-edu" data-filter="edu" aria-pressed="false">Education</button>
+      </div>
+    </div>
+    <ol class="timeline" id="timeline"></ol>
+  </section>
+
+  <section aria-labelledby="s-head">
+    <h2 id="s-head">Skills</h2>
+    <div class="skills">
+      <div>
+        <span class="label">Software &amp; Tools</span>
+        <ul><li>MATLAB &amp; Simulink</li><li>Typhoon HIL</li><li>LTspice</li><li>KiCad</li><li>AutoCAD</li><li>Blender</li><li>Microsoft Office</li></ul>
+      </div>
+      <div>
+        <span class="label">Strengths</span>
+        <ul><li>Organization and planning</li><li>Creativity</li><li>Working independently</li><li>Teamwork and collaboration</li><li>Adaptability to demanding environments</li></ul>
+      </div>
+      <div>
+        <span class="label">Languages</span>
+        <ul><li>Greek · Native</li><li>English · C2 (NOCN Level 3, ESOL International)</li><li>German · B1 (Goethe-Zertifikat), preparing for B2</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="c-head" id="contact">
+    <h2 id="c-head">Contact</h2>
+    <div class="contact">
+      <div class="contact-row">
+        <span class="email" id="email">kotsadam.anastasios@gmail.com</span>
+        <button type="button" class="copy" id="copy-email" data-target="email">Copy</button>
+      </div>
+      <div class="links">
+        <a href="https://www.linkedin.com/in/anastasios-kotsadam" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/AnastasiosKotsadam" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Anastasios Kotsadam</footer>
+</div>
+
+<script>
+/* Edit entries here. type: "work" | "project" | "edu". current: true fills the dot. Entries in the same year keep this order. */
+const ENTRIES = [
+  { year: 2027, type: "edu", period: "2021 – Spring 2027 (expected)", title: "Integrated Master in Electrical & Computer Engineering", org: "University of Patras",
+    text: "Specialization in Energy Conversion, Power Electronics and Renewable Energy Sources.",
+    tags: ["Power electronics", "Energy conversion", "Renewables"], current: true },
+  { year: 2026, type: "work", period: "Winter 2026 – 2027", title: "Research Intern", org: "Institute of Robust Power Semiconductor Systems, University of Stuttgart",
+    text: "Multi-domain optimization of a DC/DC power converter. Developing the thermal management system of a buck converter, from thermal modelling and design to experimental validation. The work combines circuit simulation, PCB design and lab measurements to improve efficiency, stability and power density.",
+    tags: ["Buck converter", "Thermal management", "PCB design"], current: true },
+  { year: 2026, type: "project", period: "Ongoing", title: "Wireless Power Transfer Module", org: "Team project with the IEEE Student Branch, University of Patras",
+    text: "Modelling and simulating the complete system in LTspice, designing the PCB and validating its operation through laboratory testing.",
+    tags: ["LTspice", "KiCad", "Lab testing"], current: true },
+  { year: 2026, type: "project", period: "Presented September 2026", title: "Diploma Thesis", org: "University of Patras",
+    text: "Control design of a hybrid transformer for output voltage improvement, with experimental implementation.",
+    tags: ["Control design", "Hybrid transformer", "Experimental validation"] },
+  { year: 2026, type: "work", period: "Summer 2026", title: "Electrical Engineering Intern", org: "METLEN Energy & Metals, Aluminium of Greece",
+    text: "Member of the Electrical Engineering Studies & Projects Supervision team at a large-scale aluminium plant. Supported the preparation and review of electrical studies, drawings and technical specifications, and assisted with the supervision and coordination of electrical works on site.",
+    tags: ["Industrial installations", "Power systems", "Site supervision"] }
+];
+
+const LABELS = { work: "Experience", project: "Project", edu: "Education" };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function render(filter) {
+  const list = ENTRIES.map((e, i) => ({ ...e, i }))
+    .filter(e => filter === "all" || e.type === filter)
+    .sort((a, b) => b.year - a.year || a.i - b.i);
+  const years = [...new Set(list.map(e => e.year))];
+  document.getElementById("timeline").innerHTML = years.map(y => `
+    <li class="year">
+      <span class="year-num">${y}</span>
+      <div class="entries">
+        ${list.filter(e => e.year === y).map(e => `
+          <article class="entry" data-type="${e.type}" data-current="${!!e.current}">
+            <div class="entry-top"><span class="type">${LABELS[e.type]}</span><span class="period">${esc(e.period)}</span></div>
+            <h3>${esc(e.title)} <span class="org">· ${esc(e.org)}</span></h3>
+            <p>${esc(e.text)}</p>
+            ${e.tags && e.tags.length ? `<div class="tags">${e.tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>` : ""}
+            ${e.link ? `<a class="link" href="${esc(e.link)}" target="_blank" rel="noopener">View project ↗</a>` : ""}
+          </article>`).join("")}
+      </div>
+    </li>`).join("");
+}
+
+document.querySelectorAll(".filters button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filters button").forEach(b => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
+    render(btn.dataset.filter);
+  });
+});
+
+document.querySelectorAll(".copy").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const el = document.getElementById(btn.dataset.target);
+    const text = el.textContent.replace(/\s/g, btn.dataset.target === "phone" ? "" : " ").trim();
+    const done = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy", 1800); };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (_) { fallback(); }
+  });
+});
+
+render("all");
+</script>
+</body>
+</html>
