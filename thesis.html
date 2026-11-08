@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hybrid Transformer Thesis · Anastasios Kotsadam</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Diploma thesis by Anastasios Kotsadam: control design of a hybrid transformer for output voltage improvement, with experimental implementation on Typhoon HIL 404.">
+<meta name="author" content="Anastasios Kotsadam">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: same quiet column as the portfolio; a facts strip, a concept diagram, then the text in three parts and the figures. */
+:root {
+  --bg: #F7F8F9;
+  --surface: #FFFFFF;
+  --fg: #16191D;
+  --muted: #5E6670;
+  --rule: #DDE1E6;
+  --accent: #2E4B6E;
+  --proj: #5B5A2E;
+
+  --f-display: "Literata", "Georgia", "Times New Roman", serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --s-xs: 0.8125rem;
+  --s-sm: 0.875rem;
+  --s-md: 1rem;
+  --s-lg: 1.25rem;
+  --s-xl: 2.125rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111316; --surface: #181B1F; --fg: #E7E9EC; --muted: #9AA2AC; --rule: #2A2F35;
+    --accent: #9DB6D6; --proj: #C9C68E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111316; --surface: #181B1F; --fg: #E7E9EC; --muted: #9AA2AC; --rule: #2A2F35;
+  --accent: #9DB6D6; --proj: #C9C68E;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-body);
+  font-size: var(--s-md);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+.wrap {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+.back { font-size: var(--s-sm); color: var(--muted); text-decoration: none; align-self: flex-start; }
+.back:hover { color: var(--fg); }
+
+.label {
+  font-size: var(--s-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+header { display: flex; flex-direction: column; gap: 1.25rem; }
+.eyebrow { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; align-items: baseline; }
+.eyebrow .type { color: var(--proj); }
+h1 {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: var(--s-xl);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem 1.5rem;
+  margin: 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+.facts div { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.facts dt { font-size: var(--s-xs); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.facts dd { margin: 0; font-size: var(--s-sm); font-weight: 500; }
+
+/* Concept diagram */
+.diagram { margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.diagram-box { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 1.25rem; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.d-block { fill: var(--surface); stroke: var(--fg); stroke-width: 1.25; }
+.d-hi { fill: var(--bg); stroke: var(--accent); stroke-width: 1.5; }
+.d-line { fill: none; stroke: var(--fg); stroke-width: 1.25; }
+.d-ctrl { fill: none; stroke: var(--accent); stroke-width: 1.25; stroke-dasharray: 4 4; }
+.d-text { fill: var(--fg); font-family: var(--f-body); font-size: 13px; }
+.d-note { fill: var(--muted); font-family: var(--f-mono); font-size: 11px; }
+.d-acc { fill: var(--accent); }
+.d-arrow { fill: var(--fg); }
+figcaption { font-size: var(--s-sm); color: var(--muted); max-width: 62ch; }
+
+/* Text */
+.parts { display: flex; flex-direction: column; gap: 2.25rem; }
+.part { display: grid; grid-template-columns: 7rem 1fr; gap: 1.25rem; }
+.part h2 { margin: 0; padding-top: 0.2rem; font-size: var(--s-xs); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.part p { margin: 0; max-width: 62ch; min-width: 0; }
+
+/* Figures */
+section { display: flex; flex-direction: column; gap: 1.25rem; }
+h2.sec { font-family: var(--f-display); font-weight: 500; font-size: var(--s-lg); margin: 0; }
+.figures { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 1.25rem; }
+.fig { margin: 0; display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+.fig.wide { grid-column: 1 / -1; }
+.fig img { width: 100%; height: auto; border-radius: 4px; border: 1px solid var(--rule); background: var(--surface); }
+.ph {
+  display: none;
+  aspect-ratio: 4 / 3; max-width: 100%;
+  border: 1px dashed var(--rule); border-radius: 4px;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 1rem;
+  font-family: var(--f-mono); font-size: var(--s-xs); color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.fig.wide .ph { aspect-ratio: 16 / 7; }
+.fig.empty img { display: none; }
+.fig.empty .ph { display: flex; }
+
+footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1rem; font-size: var(--s-xs); color: var(--muted); border-top: 1px solid var(--rule); padding-top: 1.25rem; }
+footer a { color: var(--muted); }
+
+@media (max-width: 560px) {
+  .wrap { padding-block: 2rem 2rem; gap: 2.75rem; }
+  h1 { font-size: 1.625rem; }
+  .part { grid-template-columns: 1fr; gap: 0.4rem; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .figures { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Anastasios Kotsadam</a>
+
+  <header>
+    <div class="eyebrow">
+      <span class="label type">Diploma Thesis</span>
+      <span class="label">University of Patras</span>
+    </div>
+    <h1>Control Design of a Hybrid Transformer for Output Voltage Improvement and Experimental Implementation</h1>
+    <dl class="facts">
+      <div><dt>Presented</dt><dd>September 2026</dd></div>
+      <div><dt>Platform</dt><dd>Typhoon HIL 404</dd></div>
+      <div><dt>Control</dt><dd>Hierarchical PI, dq frame</dd></div>
+      <div><dt>Field</dt><dd>Distribution grids</dd></div>
+    </dl>
+  </header>
+
+  <figure class="diagram">
+    <div class="diagram-box">
+      <svg viewBox="0 0 640 250" role="img" aria-labelledby="dg-title">
+        <title id="dg-title">Simplified hybrid transformer concept: grid, distribution transformer, AC/AC converter on the auxiliary winding, control loops and load</title>
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="d-arrow" d="M0,0 L10,5 L0,10 z"/>
+          </marker>
+          <marker id="arr-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path class="d-acc" d="M0,0 L10,5 L0,10 z"/>
+          </marker>
+        </defs>
+
+        <!-- main power path -->
+        <rect class="d-block" x="16" y="38" width="84" height="44" rx="3"/>
+        <text class="d-text" x="58" y="65" text-anchor="middle">Grid</text>
+        <line class="d-line" x1="100" y1="60" x2="150" y2="60" marker-end="url(#arr)"/>
+
+        <rect class="d-block" x="150" y="38" width="160" height="44" rx="3"/>
+        <text class="d-text" x="230" y="65" text-anchor="middle">Distribution transformer</text>
+        <line class="d-line" x1="310" y1="60" x2="388" y2="60" marker-end="url(#arr)"/>
+
+        <circle class="d-block" cx="400" cy="60" r="12"/>
+        <line class="d-line" x1="394" y1="60" x2="406" y2="60"/>
+        <line class="d-line" x1="400" y1="54" x2="400" y2="66"/>
+        <line class="d-line" x1="412" y1="60" x2="520" y2="60" marker-end="url(#arr)"/>
+
+        <rect class="d-block" x="520" y="38" width="100" height="44" rx="3"/>
+        <text class="d-text" x="570" y="65" text-anchor="middle">Load</text>
+
+        <!-- auxiliary winding to converter -->
+        <polyline class="d-line" points="230,82 230,152 330,152" marker-end="url(#arr)"/>
+        <text class="d-note" x="238" y="122">auxiliary winding</text>
+
+        <rect class="d-hi" x="330" y="130" width="140" height="44" rx="3"/>
+        <text class="d-text" x="400" y="157" text-anchor="middle">AC/AC converter</text>
+        <line class="d-line" x1="400" y1="130" x2="400" y2="74" marker-end="url(#arr)"/>
+        <text class="d-note" x="408" y="106">compensation</text>
+
+        <!-- control -->
+        <rect class="d-block" x="330" y="198" width="140" height="40" rx="3"/>
+        <text class="d-text" x="400" y="223" text-anchor="middle">PI control, dq frame</text>
+        <line class="d-ctrl" x1="400" y1="198" x2="400" y2="176" marker-end="url(#arr-acc)"/>
+        <polyline class="d-ctrl" points="570,82 570,218 472,218" marker-end="url(#arr-acc)"/>
+        <text class="d-note" x="578" y="160">V, θ</text>
+        <text class="d-note" x="578" y="174">measured</text>
+      </svg>
+    </div>
+    <figcaption>Simplified concept. Power flows through the conventional transformer. A partially rated AC/AC converter, fed from the existing auxiliary winding, corrects the magnitude and phase of the load voltage.</figcaption>
+  </figure>
+
+  <div class="parts">
+    <div class="part">
+      <h2>Motivation</h2>
+      <p>The thesis focuses on the control and experimental implementation of a Hybrid Transformer,
+          namely the combination of a conventional distribution transformer with power-electronic 
+          converters rated at a fraction of the transformer’s nominal power, with the aim of regulating 
+          the voltage in distribution networks. Given the current state of technology, the complete 
+          replacement of existing transformers with Solid-State Transformers is not considered the 
+          optimal solution due to their high cost and reduced reliability under fault conditions.</p>
+    </div>
+    <div class="part">
+      <h2>Approach</h2>
+      <p>The integration of an AC/AC converter into the transformer’s existing auxiliary 
+        winding is investigated, along with the development of the necessary current and voltage 
+        control loops in the rotating DQ reference frame. Since controlling the power-electronic 
+        converters employed in the system is a particularly complex task, a hierarchical control 
+        strategy based on PI controllers is studied, together with an additional control loop for 
+        regulating the phase shift of the load voltage relative to the supply voltage. These 
+        technologies aim to stabilize the magnitude and phase angle of the load voltage at 
+        their desired reference values.</p>
+    </div>
+    <div class="part">
+      <h2>Validation</h2>
+      <p>The aforementioned concepts are investigated through the development of a real-time 
+         simulation model in the Typhoon HIL 404 environment, as well as through an experimental 
+         setup interfaced with the Typhoon HIL 404. This enables the observation of the system’s 
+         behavior and characteristics under variations in load, grid voltage and phase shift.</p>
+    </div>
+  </div>
+
+<!-- FIGURES -->
+
+  <section aria-labelledby="fig-head">
+    <h2 class="sec" id="fig-head">Figures</h2>
+    <div class="figures">
+      <!-- FIGURE 1: wide photo. Upload thesis-setup.jpg next to this file. -->
+      <figure class="fig wide">
+        <img src="Electrical_Circuit.png" alt="Schematic of electrical circuit" onerror="this.parentElement.classList.add('empty')">
+        <div class="ph">Add photo: thesis-setup.jpg</div>
+        <figcaption>Schematic of electrical circuit.</figcaption>
+      </figure>
+
+      <!-- FIGURE 2. Upload thesis-model.png next to this file. -->
+      <figure class="fig">
+        <img src="HT_CONFIGURATION_POWER_POINT.jpg" alt="Schematic of experimental setup" onerror="this.parentElement.classList.add('empty')">
+        <div class="ph">Add image: thesis-model.png</div>
+        <figcaption>Schematic of experimental setup.</figcaption>
+      </figure>
+
+      <!-- FIGURE 3. Upload thesis-results.png next to this file. -->
+      <figure class="fig">
+        <img src="Experimental_ciruit.jpg" alt="Experimental setup with Typhoon-HIL 404" onerror="this.parentElement.classList.add('empty')">
+        <div class="ph">Add image: thesis-results.png</div>
+        <figcaption>Experimental setup with Typhoon-HIL 404.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="ov-head">
+    <h2 class="sec" id="ov-head">Transformer's behavior under over-voltage</h2>
+    <div class="figures">
+      <!-- PAIR 1, left. Upload overvoltage-1.png next to this file. -->
+      <figure class="fig">
+        <img src="RMS_Voltages.png" alt="Control behavior under over-voltage, figure 1" onerror="this.parentElement.classList.add('empty')">
+        <div class="ph">Add image: RMS_Voltages.png</div>
+        <figcaption>Voltage RMS values on load, grid and inverter's output .</figcaption>
+      </figure>
+      <!-- PAIR 1, right. Upload overvoltage-2.png next to this file. -->
+      <figure class="fig">
+        <img src="scope5zoom1.png" alt="Control behavior under over-voltage, figure 2" onerror="this.parentElement.classList.add('empty')">
+        <div class="ph">Add image: scope5zoom1.png</div>
+        <figcaption>Final stage, invert's output voltage wave is inverted to reduce load's voltage.</figcaption>
+      </figure>
+      <!-- To add another pair, copy two <figure> blocks above and paste them here. -->
+    </div>
+  </section>
+
+  <section aria-labelledby="ov-head">
+    <h2 class="sec" id="ov-head">Transformer's behavior under load's phase change</h2>
+    <div class="figures">
+      <!-- PAIR 1, left. Upload overvoltage-1.png next to this file. -->
+      <figure class="fig">
+        <img src="RMS_Voltages_phase.png" alt="Control behavior under over-voltage, figure 1" onerror="this.parentElement.classList.add('empty')">
+        <div class="ph">Add image: RMS_Voltages_phases.png</div>
+        <figcaption>Voltage RMS values on load, grid and inverter's output .</figcaption>
+      </figure>
+      <!-- PAIR 1, right. Upload overvoltage-2.png next to this file. -->
+      <figure class="fig">
+        <img src="scope12zoom.png" alt="Control behavior under over-voltage, figure 2" onerror="this.parentElement.classList.add('empty')">
+        <div class="ph">Add image: scope5zoom1.png</div>
+        <figcaption>Final stage, invert's output voltage has a phase difference.</figcaption>
+      </figure>
+      <!-- To add another pair, copy two <figure> blocks above and paste them here. -->
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html">← Back to portfolio</a>
+    <span>© 2026 Anastasios Kotsadam</span>
+  </footer>
+</div>
+</body>
+</html>

@@ -158,6 +158,9 @@ h2 {
 .tags { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.25rem; }
 .tags span { font-size: var(--s-xs); color: var(--muted); border: 1px solid var(--rule); border-radius: 3px; padding: 0 0.4rem; }
 .entry .link { font-size: var(--s-sm); }
+.entry .more { align-self: flex-start; margin-top: 0.15rem; }
+.title-link { color: var(--fg); text-decoration-color: var(--rule); }
+.title-link:hover { color: var(--accent); text-decoration-color: currentColor; }
 
 /* Skills */
 .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1.75rem 2rem; }
@@ -268,7 +271,7 @@ const ENTRIES = [
     tags: ["LTspice", "KiCad", "Lab testing"], current: true },
   { year: 2026, type: "project", period: "Presented September 2026", title: "Diploma Thesis", org: "University of Patras",
     text: "Control design of a hybrid transformer for output voltage improvement, with experimental implementation.",
-    tags: ["Control design", "Hybrid transformer", "Experimental validation"] },
+    tags: ["Control design", "Hybrid transformer", "Experimental validation"], page: "thesis.html" },
   { year: 2026, type: "work", period: "Summer 2026", title: "Electrical Engineering Intern", org: "METLEN Energy & Metals, Aluminium of Greece",
     text: "Member of the Electrical Engineering Studies & Projects Supervision team at a large-scale aluminium plant. Supported the preparation and review of electrical studies, drawings and technical specifications, and assisted with the supervision and coordination of electrical works on site.",
     tags: ["Industrial installations", "Power systems", "Site supervision"] }
@@ -289,9 +292,10 @@ function render(filter) {
         ${list.filter(e => e.year === y).map(e => `
           <article class="entry" data-type="${e.type}" data-current="${!!e.current}">
             <div class="entry-top"><span class="type">${LABELS[e.type]}</span><span class="period">${esc(e.period)}</span></div>
-            <h3>${esc(e.title)} <span class="org">· ${esc(e.org)}</span></h3>
+            <h3>${e.page ? `<a class="title-link" href="${esc(e.page)}">${esc(e.title)}</a>` : esc(e.title)} <span class="org">· ${esc(e.org)}</span></h3>
             <p>${esc(e.text)}</p>
             ${e.tags && e.tags.length ? `<div class="tags">${e.tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>` : ""}
+            ${e.page ? `<a class="link more" href="${esc(e.page)}">Read more →</a>` : ""}
             ${e.link ? `<a class="link" href="${esc(e.link)}" target="_blank" rel="noopener">View project ↗</a>` : ""}
           </article>`).join("")}
       </div>
